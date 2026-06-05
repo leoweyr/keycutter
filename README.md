@@ -58,9 +58,9 @@ Compute the CRC32-IEEE (reflected form) checksum of `BaseString` encoded as a UT
 
 $$
 \begin{array}{l}
-\text{for } i = 5 \rightarrow 0: \\[4pt]
-\quad \text{Remainder} = \text{Value} \bmod 62 \\[4pt]
-\quad \text{Checksum}[i] = \text{ALPHABET}[\text{Remainder}] \\[4pt]
+\text{for } i = 5 \rightarrow 0: \\
+\quad \text{Remainder} = \text{Value} \bmod 62 \\
+\quad \text{Checksum}[i] = \text{ALPHABET}[\text{Remainder}] \\
 \quad \text{Value} = \left\lfloor \dfrac{\text{Value}}{62} \right\rfloor
 \end{array}
 $$
