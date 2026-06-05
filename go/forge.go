@@ -1,10 +1,10 @@
 package tokenforge
 
 import (
-	"go.leoweyr.com/tokenforge/internal/checksum"
-	"go.leoweyr.com/tokenforge/internal/encoding"
-	"go.leoweyr.com/tokenforge/internal/entropy"
-	"go.leoweyr.com/tokenforge/internal/token"
+	"go.leoweyr.com/tokenforge/go/internal/checksum"
+	"go.leoweyr.com/tokenforge/go/internal/encoding"
+	"go.leoweyr.com/tokenforge/go/internal/entropy"
+	"go.leoweyr.com/tokenforge/go/internal/token"
 )
 
 // Forge is the public entry point of the Tokenforge module. It composes the

@@ -1,10 +1,10 @@
 package token
 
 import (
-	"go.leoweyr.com/tokenforge/internal/checksum"
-	"go.leoweyr.com/tokenforge/internal/encoding"
-	"go.leoweyr.com/tokenforge/internal/entropy"
-	"go.leoweyr.com/tokenforge/internal/fault"
+	"go.leoweyr.com/tokenforge/go/internal/checksum"
+	"go.leoweyr.com/tokenforge/go/internal/encoding"
+	"go.leoweyr.com/tokenforge/go/internal/entropy"
+	"go.leoweyr.com/tokenforge/go/internal/fault"
 )
 
 // TokenGenerator orchestrates the full generation pipeline, turning a set of

@@ -3,10 +3,10 @@ package token
 import (
 	"strings"
 
-	"go.leoweyr.com/tokenforge/internal/checksum"
-	"go.leoweyr.com/tokenforge/internal/encoding"
-	"go.leoweyr.com/tokenforge/internal/entropy"
-	"go.leoweyr.com/tokenforge/internal/fault"
+	"go.leoweyr.com/tokenforge/go/internal/checksum"
+	"go.leoweyr.com/tokenforge/go/internal/encoding"
+	"go.leoweyr.com/tokenforge/go/internal/entropy"
+	"go.leoweyr.com/tokenforge/go/internal/fault"
 )
 
 // TokenValidator orchestrates the validation pipeline: a structural guard, an

@@ -3,7 +3,7 @@ package entropy
 import (
 	"crypto/rand"
 
-	"go.leoweyr.com/tokenforge/internal/encoding"
+	"go.leoweyr.com/tokenforge/go/internal/encoding"
 )
 
 // Generator produces a fresh high-intensity entropy segment on demand.

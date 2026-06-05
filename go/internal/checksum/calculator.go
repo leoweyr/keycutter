@@ -3,7 +3,7 @@ package checksum
 import (
 	"hash/crc32"
 
-	"go.leoweyr.com/tokenforge/internal/encoding"
+	"go.leoweyr.com/tokenforge/go/internal/encoding"
 )
 
 // Calculator maps a token base string to its fixed-width Base62 tail checksum.
