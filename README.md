@@ -20,6 +20,14 @@ One spec, every language — context-aware credential architecture for generatin
 
 **Structured Threshold Assertion** — Perimeter length guards discard hard-coded magic numbers. Minimum valid lengths are derived dynamically from the credential's own topology formula.
 
+## 🚀 Quick Start
+
+### Go
+
+```bash
+go get go.leoweyr.com/tokenforge/go
+```
+
 ## 🏗️ Generation Pipeline
 
 ### 1. Prefix Construction
