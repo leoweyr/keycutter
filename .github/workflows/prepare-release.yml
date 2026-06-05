@@ -5,6 +5,8 @@ on:
   push:
     tags:
       - 'v*'
+      - '*/v*'
+
 
 permissions:
   contents: write
@@ -20,6 +22,6 @@ jobs:
         {
           "go": "go"
         }
-    
+
     secrets:
       ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
