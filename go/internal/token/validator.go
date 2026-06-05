@@ -39,13 +39,13 @@ func (tokenValidator *TokenValidator) verifyChecksum(baseString string, provided
 
 // validateComponent rejects an empty identifier or one bearing a character outside
 // the permitted prefix alphabet.
-func (tokenValidator *TokenValidator) validateComponent(value string) error {
+func (tokenValidator *TokenValidator) validateComponent(componentName string, value string) error {
 	if len(value) == 0 {
-		return fault.NewValidationError("Token prefix contains an empty semantic component")
+		return fault.NewValidationError("Token prefix " + componentName + " component is empty")
 	}
 
 	if !tokenValidator.prefixAlphabet.Permits(value) {
-		return fault.NewValidationError("Token prefix contains a character outside the permitted set")
+		return fault.NewValidationError("Token prefix " + componentName + " component contains a character outside the permitted set")
 	}
 
 	return nil
@@ -65,14 +65,22 @@ func (tokenValidator *TokenValidator) reifyContext(prefixPortion string) (string
 		return "", "", "", fault.NewValidationError("Token prefix does not contain exactly three semantic components")
 	}
 
-	var position int
+	var systemError error = tokenValidator.validateComponent("system", components[0])
 
-	for position = 0; position < len(components); position++ {
-		var componentError error = tokenValidator.validateComponent(components[position])
+	if systemError != nil {
+		return "", "", "", systemError
+	}
 
-		if componentError != nil {
-			return "", "", "", componentError
-		}
+	var environmentError error = tokenValidator.validateComponent("environment", components[1])
+
+	if environmentError != nil {
+		return "", "", "", environmentError
+	}
+
+	var domainPurposeError error = tokenValidator.validateComponent("domain purpose", components[2])
+
+	if domainPurposeError != nil {
+		return "", "", "", domainPurposeError
 	}
 
 	return components[0], components[1], components[2], nil
