@@ -1,0 +1,123 @@
+name: Generate Structured Token
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      system_id:
+        description: 'System abbreviation for the token.'
+        required: true
+        type: string
+      environment:
+        description: 'Target deployment environment for the token.'
+        required: true
+        type: choice
+        options:
+          - Preview
+          - Production
+      domain_purpose:
+        description: 'Domain purpose abbreviation for the token.'
+        required: true
+        type: string
+
+
+jobs:
+  generate_token:
+    name: Generate Token
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔍 Validate Inputs
+        id: validate_inputs
+        run: |
+          SYSTEM_ID='${{ inputs.system_id }}'
+          DOMAIN_PURPOSE='${{ inputs.domain_purpose }}'
+
+          if [[ -z "$SYSTEM_ID" ]]; then
+            echo "::error::System identifier must not be empty."
+          
+            exit 1
+          fi
+
+          if [[ -z "$DOMAIN_PURPOSE" ]]; then
+            echo "::error::Domain purpose identifier must not be empty."
+          
+            exit 1
+          fi
+
+          if [[ "$SYSTEM_ID" =~ [_\ ] ]]; then
+            echo "::error::System identifier must not contain underscores or spaces."
+          
+            exit 1
+          fi
+
+          if [[ "$DOMAIN_PURPOSE" =~ [_\ ] ]]; then
+            echo "::error::Domain purpose identifier must not contain underscores or spaces."
+          
+            exit 1
+          fi
+
+          if [ '${{ inputs.environment }}' = 'Preview' ]; then
+            echo "env_id=prev" >> "$GITHUB_OUTPUT"
+          else
+            echo "env_id=prod" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 🎲 Generate Token
+        id: generate_token
+        run: |
+          SYSTEM_ID='${{ inputs.system_id }}'
+          ENV_ID='${{ steps.validate_inputs.outputs.env_id }}'
+          DOMAIN_PURPOSE='${{ inputs.domain_purpose }}'
+
+          # Generate 256-bit high-strength random entropy.
+          ENTROPY=$(openssl rand -hex 32)
+
+          # Assemble token body (without checksum).
+          TOKEN_BODY="${SYSTEM_ID}_${ENV_ID}_${DOMAIN_PURPOSE}_${ENTROPY}"
+
+          # Compute CRC32 checksum encoded as 6-char base62.
+          # Base62 alphabet: 0-9 A-Z a-z; 62^6 > 2^32 so the full CRC32 fits losslessly.
+          CHECKSUM=$(python3 - "$TOKEN_BODY" << 'PYEOF'
+          import binascii, sys
+          ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+          data = sys.argv[1]
+          crc = binascii.crc32(data.encode("utf-8")) & 0xFFFFFFFF
+          result = []
+          
+          for _ in range(6):
+              result.append(ALPHABET[crc % 62])
+              crc //= 62
+          print("".join(reversed(result)))
+          
+          PYEOF
+          )
+
+          FINAL_TOKEN="${TOKEN_BODY}_${CHECKSUM}"
+
+          echo "system_id=${SYSTEM_ID}" >> "$GITHUB_OUTPUT"
+          echo "env_id=${ENV_ID}" >> "$GITHUB_OUTPUT"
+          echo "domain_purpose=${DOMAIN_PURPOSE}" >> "$GITHUB_OUTPUT"
+          echo "entropy=${ENTROPY}" >> "$GITHUB_OUTPUT"
+          echo "checksum=${CHECKSUM}" >> "$GITHUB_OUTPUT"
+          echo "final_token=${FINAL_TOKEN}" >> "$GITHUB_OUTPUT"
+
+      - name: '📝 Write Summary'
+        env:
+          FINAL_TOKEN: ${{ steps.generate_token.outputs.final_token }}
+          CHECKSUM: ${{ steps.generate_token.outputs.checksum }}
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" << EOF
+          ## 🔑 Generated Structured Token
+
+          | Field | Value |
+          |---|---|
+          | System ID | \`${{ steps.generate_token.outputs.system_id }}\` |
+          | Environment ID | \`${{ steps.generate_token.outputs.env_id }}\` |
+          | Domain Purpose ID | \`${{ steps.generate_token.outputs.domain_purpose }}\` |
+          | Entropy | \`(masked — 256-bit random)\` |
+          | CRC32 Checksum (base62) | \`${CHECKSUM}\` |
+
+          \`\`\`
+          ${FINAL_TOKEN}
+          \`\`\`
+          EOF
