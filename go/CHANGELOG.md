@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-# [unreleased]
+# [1.1.0](https://github.com/leoweyr/tokenforge/compare/go/v1.0.0...go/v1.1.0) (2026-06-15)
+### Features
+
+* **go:** add optional self-describing Base36 timestamp prefix component ([fe178dd](https://github.com/leoweyr/tokenforge/commit/fe178dd48950f348e4d0eda97dc9d102e350028f)) [@leoweyr](https://github.com/leoweyr)
+
+
+
+# 1.0.0
 ### Features
 
 * **go:** implement token generation and validation module ([42a2e00](https://github.com/leoweyr/tokenforge/commit/42a2e00d9419792fbc719d8e5b53cb0392b4009d)) [@leoweyr](https://github.com/leoweyr)
