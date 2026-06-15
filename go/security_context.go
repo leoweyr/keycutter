@@ -1,21 +1,29 @@
 package tokenforge
 
-import "strings"
+import (
+	"strings"
 
-// SecurityContext exposes the three plaintext semantic identifiers reified from a
-// validated token: the system, the environment, and the domain purpose.
+	"go.leoweyr.com/tokenforge/go/internal/timestamp"
+)
+
+// SecurityContext exposes the plaintext semantic identifiers reified from a validated
+// token — the system, the environment, and the domain purpose — together with the
+// optional creation timestamp when the token carried one.
 type SecurityContext struct {
 	systemIdentifier        string
 	environmentIdentifier   string
 	domainPurposeIdentifier string
+	timestamp               *timestamp.Timestamp
 }
 
-// newSecurityContext assembles a SecurityContext from its three semantic identifiers.
-func newSecurityContext(systemIdentifier string, environmentIdentifier string, domainIdentifier string) *SecurityContext {
+// newSecurityContext assembles a SecurityContext from its three semantic identifiers
+// and an optional creation timestamp.
+func newSecurityContext(systemIdentifier string, environmentIdentifier string, domainIdentifier string, reifiedTimestamp *timestamp.Timestamp) *SecurityContext {
 	return &SecurityContext{
 		systemIdentifier:        systemIdentifier,
 		environmentIdentifier:   environmentIdentifier,
 		domainPurposeIdentifier: domainIdentifier,
+		timestamp:               reifiedTimestamp,
 	}
 }
 
@@ -34,7 +42,25 @@ func (securityContext *SecurityContext) DomainPurposeIdentifier() string {
 	return securityContext.domainPurposeIdentifier
 }
 
-// String renders the three identifiers joined by underscores.
+// CreatedAtUnixSeconds returns the embedded creation instant as a Unix epoch second
+// count and reports whether the token carried a timestamp. The boolean disambiguates a
+// genuine epoch-zero instant from an absent timestamp.
+func (securityContext *SecurityContext) CreatedAtUnixSeconds() (uint64, bool) {
+	if securityContext.timestamp == nil {
+		return 0, false
+	}
+
+	return securityContext.timestamp.Seconds(), true
+}
+
+// String renders the semantic identifiers joined by underscores, appending the Base36
+// timestamp component when the token carried one.
 func (securityContext *SecurityContext) String() string {
-	return strings.Join([]string{securityContext.systemIdentifier, securityContext.environmentIdentifier, securityContext.domainPurposeIdentifier}, "_")
+	var components []string = []string{securityContext.systemIdentifier, securityContext.environmentIdentifier, securityContext.domainPurposeIdentifier}
+
+	if securityContext.timestamp != nil {
+		components = append(components, securityContext.timestamp.Value())
+	}
+
+	return strings.Join(components, "_")
 }

@@ -14,11 +14,11 @@ type Calculator interface {
 // Crc32Calculator derives the tail checksum from the CRC32-IEEE value of a base
 // string encoded as Base62.
 type Crc32Calculator struct {
-	encoder *encoding.Base62Encoder
+	encoder *encoding.Base62Codec
 }
 
-// NewCrc32Calculator builds a Crc32Calculator backed by the given Base62 encoder.
-func NewCrc32Calculator(encoder *encoding.Base62Encoder) *Crc32Calculator {
+// NewCrc32Calculator builds a Crc32Calculator backed by the given Base62 codec.
+func NewCrc32Calculator(encoder *encoding.Base62Codec) *Crc32Calculator {
 	return &Crc32Calculator{encoder: encoder}
 }
 

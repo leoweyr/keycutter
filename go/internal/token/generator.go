@@ -5,6 +5,7 @@ import (
 	"go.leoweyr.com/tokenforge/go/internal/encoding"
 	"go.leoweyr.com/tokenforge/go/internal/entropy"
 	"go.leoweyr.com/tokenforge/go/internal/fault"
+	"go.leoweyr.com/tokenforge/go/internal/timestamp"
 )
 
 // TokenGenerator orchestrates the full generation pipeline, turning a set of
@@ -13,15 +14,19 @@ type TokenGenerator struct {
 	prefixAlphabet     *encoding.Alphabet
 	entropyGenerator   entropy.Generator
 	checksumCalculator checksum.Calculator
+	clock              timestamp.Clock
+	base36Codec        *encoding.Base36Codec
 }
 
 // NewTokenGenerator wires a TokenGenerator to its prefix alphabet, entropy source,
-// and checksum calculator.
-func NewTokenGenerator(prefixAlphabet *encoding.Alphabet, entropyGenerator entropy.Generator, checksumCalculator checksum.Calculator) *TokenGenerator {
+// checksum calculator, wall clock, and Base36 codec.
+func NewTokenGenerator(prefixAlphabet *encoding.Alphabet, entropyGenerator entropy.Generator, checksumCalculator checksum.Calculator, clock timestamp.Clock, base36Codec *encoding.Base36Codec) *TokenGenerator {
 	return &TokenGenerator{
 		prefixAlphabet:     prefixAlphabet,
 		entropyGenerator:   entropyGenerator,
 		checksumCalculator: checksumCalculator,
+		clock:              clock,
+		base36Codec:        base36Codec,
 	}
 }
 
@@ -39,9 +44,10 @@ func (tokenGenerator *TokenGenerator) validateComponent(label string, value stri
 	return nil
 }
 
-// Generate validates the supplied identifiers, draws unbiased entropy, fuses the
-// base string, maps the checksum, and returns the assembled token.
-func (tokenGenerator *TokenGenerator) Generate(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string) (*Token, error) {
+// generate validates the supplied identifiers, draws unbiased entropy, fuses the
+// base string around the optional timestamp, maps the checksum, and returns the
+// assembled token.
+func (tokenGenerator *TokenGenerator) generate(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string, tokenTimestamp *timestamp.Timestamp) (*Token, error) {
 	var systemError error = tokenGenerator.validateComponent("System", systemIdentifier)
 
 	if systemError != nil {
@@ -68,8 +74,24 @@ func (tokenGenerator *TokenGenerator) Generate(systemIdentifier string, environm
 		return nil, generationError
 	}
 
-	var baseString string = assembleBaseString(systemIdentifier, environmentIdentifier, domainPurposeIdentifier, entropySegment)
+	var baseString string = assembleBaseString(systemIdentifier, environmentIdentifier, domainPurposeIdentifier, tokenTimestamp, entropySegment)
 	var checksumSegment *checksum.Checksum = tokenGenerator.checksumCalculator.Calculate(baseString)
 
-	return NewToken(systemIdentifier, environmentIdentifier, domainPurposeIdentifier, entropySegment, checksumSegment), nil
+	return NewToken(systemIdentifier, environmentIdentifier, domainPurposeIdentifier, tokenTimestamp, entropySegment, checksumSegment), nil
+}
+
+// Generate produces a token whose prefix carries only the three semantic identifiers.
+func (tokenGenerator *TokenGenerator) Generate(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string) (*Token, error) {
+	return tokenGenerator.generate(systemIdentifier, environmentIdentifier, domainPurposeIdentifier, nil)
+}
+
+// GenerateWithTimestamp produces a token whose prefix appends a fourth component: the
+// current wall-clock instant as Unix seconds rendered in Base36, marking the credential
+// version in a self-describing way for distributed systems.
+func (tokenGenerator *TokenGenerator) GenerateWithTimestamp(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string) (*Token, error) {
+	var seconds uint64 = tokenGenerator.clock.NowUnixSeconds()
+	var encoded string = tokenGenerator.base36Codec.Encode(seconds)
+	var tokenCreated *timestamp.Timestamp = timestamp.NewTimestamp(seconds, encoded)
+
+	return tokenGenerator.generate(systemIdentifier, environmentIdentifier, domainPurposeIdentifier, tokenCreated)
 }

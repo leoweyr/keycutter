@@ -7,21 +7,25 @@ import (
 	"go.leoweyr.com/tokenforge/go/internal/encoding"
 	"go.leoweyr.com/tokenforge/go/internal/entropy"
 	"go.leoweyr.com/tokenforge/go/internal/fault"
+	"go.leoweyr.com/tokenforge/go/internal/timestamp"
 )
 
 // TokenValidator orchestrates the validation pipeline: a structural guard, an
 // asymmetric checksum slice, idempotent integrity verification, and context
-// reification into the token's three prefix identifiers.
+// reification into the token's three prefix identifiers plus an optional timestamp.
 type TokenValidator struct {
 	prefixAlphabet     *encoding.Alphabet
 	checksumCalculator checksum.Calculator
+	base36Codec        *encoding.Base36Codec
 }
 
-// NewTokenValidator wires a TokenValidator to its prefix alphabet and checksum calculator.
-func NewTokenValidator(prefixAlphabet *encoding.Alphabet, checksumCalculator checksum.Calculator) *TokenValidator {
+// NewTokenValidator wires a TokenValidator to its prefix alphabet, checksum calculator,
+// and Base36 codec.
+func NewTokenValidator(prefixAlphabet *encoding.Alphabet, checksumCalculator checksum.Calculator, base36Codec *encoding.Base36Codec) *TokenValidator {
 	return &TokenValidator{
 		prefixAlphabet:     prefixAlphabet,
 		checksumCalculator: checksumCalculator,
+		base36Codec:        base36Codec,
 	}
 }
 
@@ -51,39 +55,72 @@ func (tokenValidator *TokenValidator) validateComponent(componentName string, va
 	return nil
 }
 
-// reifyContext splits the prefix portion into its three semantic identifiers,
-// enforcing the exact component count and the permitted prefix alphabet.
-func (tokenValidator *TokenValidator) reifyContext(prefixPortion string) (string, string, string, error) {
+// reifyTimestamp validates the optional fourth prefix component against the prefix
+// alphabet and decodes its Base36 digits into a Unix-seconds timestamp.
+func (tokenValidator *TokenValidator) reifyTimestamp(component string) (*timestamp.Timestamp, error) {
+	var validationError error = tokenValidator.validateComponent("timestamp", component)
+
+	if validationError != nil {
+		return nil, validationError
+	}
+
+	var seconds uint64
+	var decodeError error
+	seconds, decodeError = tokenValidator.base36Codec.Decode(component)
+
+	if decodeError != nil {
+		return nil, fault.NewValidationError("Token prefix timestamp component is not a valid Base36 value")
+	}
+
+	return timestamp.NewTimestamp(seconds, component), nil
+}
+
+// reifyContext splits the prefix portion into its three semantic identifiers and an
+// optional Base36 timestamp. Because prefix components forbid the separator, the
+// component count alone determines presence: three components carry no timestamp,
+// four carry one as the trailing component, and any other count is rejected.
+func (tokenValidator *TokenValidator) reifyContext(prefixPortion string) (string, string, string, *timestamp.Timestamp, error) {
 	if !strings.HasSuffix(prefixPortion, Separator) {
-		return "", "", "", fault.NewValidationError("Token prefix is not terminated by a separator")
+		return "", "", "", nil, fault.NewValidationError("Token prefix is not terminated by a separator")
 	}
 
 	var core string = prefixPortion[:len(prefixPortion)-len(Separator)]
 	var components []string = strings.Split(core, Separator)
 
-	if len(components) != PrefixComponentCount {
-		return "", "", "", fault.NewValidationError("Token prefix does not contain exactly three semantic components")
+	if len(components) != PrefixComponentCount && len(components) != PrefixComponentCount+1 {
+		return "", "", "", nil, fault.NewValidationError("Token prefix does not contain three semantic components with an optional timestamp")
 	}
 
 	var systemError error = tokenValidator.validateComponent("system", components[0])
 
 	if systemError != nil {
-		return "", "", "", systemError
+		return "", "", "", nil, systemError
 	}
 
 	var environmentError error = tokenValidator.validateComponent("environment", components[1])
 
 	if environmentError != nil {
-		return "", "", "", environmentError
+		return "", "", "", nil, environmentError
 	}
 
 	var domainPurposeError error = tokenValidator.validateComponent("domain purpose", components[2])
 
 	if domainPurposeError != nil {
-		return "", "", "", domainPurposeError
+		return "", "", "", nil, domainPurposeError
 	}
 
-	return components[0], components[1], components[2], nil
+	var reifiedTimestamp *timestamp.Timestamp = nil
+
+	if len(components) == PrefixComponentCount+1 {
+		var timestampError error
+		reifiedTimestamp, timestampError = tokenValidator.reifyTimestamp(components[PrefixComponentCount])
+
+		if timestampError != nil {
+			return "", "", "", nil, timestampError
+		}
+	}
+
+	return components[0], components[1], components[2], reifiedTimestamp, nil
 }
 
 // Validate enforces the structural guard, performs the asymmetric checksum slice,
@@ -108,12 +145,13 @@ func (tokenValidator *TokenValidator) Validate(rawToken string) (*Token, error) 
 	var system string
 	var environment string
 	var domain string
+	var reifiedTimestamp *timestamp.Timestamp
 	var reificationError error
-	system, environment, domain, reificationError = tokenValidator.reifyContext(prefixPortion)
+	system, environment, domain, reifiedTimestamp, reificationError = tokenValidator.reifyContext(prefixPortion)
 
 	if reificationError != nil {
 		return nil, reificationError
 	}
 
-	return NewToken(system, environment, domain, entropy.NewEntropy(entropyValue), providedChecksum), nil
+	return NewToken(system, environment, domain, reifiedTimestamp, entropy.NewEntropy(entropyValue), providedChecksum), nil
 }
