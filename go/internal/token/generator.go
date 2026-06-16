@@ -44,23 +44,23 @@ func (tokenGenerator *TokenGenerator) validateComponent(label string, value stri
 	return nil
 }
 
-// generate validates the supplied identifiers, draws unbiased entropy, fuses the
+// Validates the supplied identifiers, draws unbiased entropy, fuses the
 // base string around the optional timestamp, maps the checksum, and returns the
 // assembled token.
-func (tokenGenerator *TokenGenerator) generate(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string, tokenTimestamp *timestamp.Timestamp) (*Token, error) {
-	var systemError error = tokenGenerator.validateComponent("System", systemIdentifier)
+func (tokenGenerator *TokenGenerator) build(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string, tokenTimestamp *timestamp.Timestamp) (*Token, error) {
+	var systemError error = tokenGenerator.validateComponent("system", systemIdentifier)
 
 	if systemError != nil {
 		return nil, systemError
 	}
 
-	var environmentError error = tokenGenerator.validateComponent("Environment", environmentIdentifier)
+	var environmentError error = tokenGenerator.validateComponent("environment", environmentIdentifier)
 
 	if environmentError != nil {
 		return nil, environmentError
 	}
 
-	var domainError error = tokenGenerator.validateComponent("Domain purpose", domainPurposeIdentifier)
+	var domainError error = tokenGenerator.validateComponent("domain purpose", domainPurposeIdentifier)
 
 	if domainError != nil {
 		return nil, domainError
@@ -82,7 +82,7 @@ func (tokenGenerator *TokenGenerator) generate(systemIdentifier string, environm
 
 // Generate produces a token whose prefix carries only the three semantic identifiers.
 func (tokenGenerator *TokenGenerator) Generate(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string) (*Token, error) {
-	return tokenGenerator.generate(systemIdentifier, environmentIdentifier, domainPurposeIdentifier, nil)
+	return tokenGenerator.build(systemIdentifier, environmentIdentifier, domainPurposeIdentifier, nil)
 }
 
 // GenerateWithTimestamp produces a token whose prefix appends a fourth component: the
@@ -93,5 +93,5 @@ func (tokenGenerator *TokenGenerator) GenerateWithTimestamp(systemIdentifier str
 	var encoded string = tokenGenerator.base36Codec.Encode(seconds)
 	var tokenCreated *timestamp.Timestamp = timestamp.NewTimestamp(seconds, encoded)
 
-	return tokenGenerator.generate(systemIdentifier, environmentIdentifier, domainPurposeIdentifier, tokenCreated)
+	return tokenGenerator.build(systemIdentifier, environmentIdentifier, domainPurposeIdentifier, tokenCreated)
 }
