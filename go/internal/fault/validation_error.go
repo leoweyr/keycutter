@@ -1,7 +1,7 @@
 package fault
 
 // ValidationError represents a structural or integrity failure detected while a
-// token is checked against the Tokenforge specification.
+// token is checked against the Keycutter specification.
 type ValidationError struct {
 	reason string
 }

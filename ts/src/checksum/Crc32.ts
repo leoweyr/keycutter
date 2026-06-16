@@ -1,6 +1,6 @@
 /**
  * Crc32 computes the CRC32-IEEE checksum, reproducing Go's hash/crc32.ChecksumIEEE bit for bit so
- * the integrity value stays identical across every Tokenforge language port.
+ * the integrity value stays identical across every Keycutter language port.
  */
 export class Crc32 {
     /**

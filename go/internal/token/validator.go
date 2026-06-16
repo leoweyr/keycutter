@@ -3,11 +3,11 @@ package token
 import (
 	"strings"
 
-	"go.leoweyr.com/tokenforge/go/internal/checksum"
-	"go.leoweyr.com/tokenforge/go/internal/encoding"
-	"go.leoweyr.com/tokenforge/go/internal/entropy"
-	"go.leoweyr.com/tokenforge/go/internal/fault"
-	"go.leoweyr.com/tokenforge/go/internal/timestamp"
+	"go.leoweyr.com/keycutter/go/v2/internal/checksum"
+	"go.leoweyr.com/keycutter/go/v2/internal/encoding"
+	"go.leoweyr.com/keycutter/go/v2/internal/entropy"
+	"go.leoweyr.com/keycutter/go/v2/internal/fault"
+	"go.leoweyr.com/keycutter/go/v2/internal/timestamp"
 )
 
 // TokenValidator orchestrates the validation pipeline: a structural guard, an
@@ -35,7 +35,7 @@ func (tokenValidator *TokenValidator) verifyChecksum(baseString string, provided
 	var expected *checksum.Checksum = tokenValidator.checksumCalculator.Calculate(baseString)
 
 	if !expected.Equals(provided) {
-		return fault.NewValidationError("Token checksum does not match its base string")
+		return fault.NewValidationError("token checksum does not match its base string")
 	}
 
 	return nil
@@ -45,11 +45,11 @@ func (tokenValidator *TokenValidator) verifyChecksum(baseString string, provided
 // the permitted prefix alphabet.
 func (tokenValidator *TokenValidator) validateComponent(componentName string, value string) error {
 	if len(value) == 0 {
-		return fault.NewValidationError("Token prefix " + componentName + " component is empty")
+		return fault.NewValidationError("token prefix " + componentName + " component is empty")
 	}
 
 	if !tokenValidator.prefixAlphabet.Permits(value) {
-		return fault.NewValidationError("Token prefix " + componentName + " component contains a character outside the permitted set")
+		return fault.NewValidationError("token prefix " + componentName + " component contains a character outside the permitted set")
 	}
 
 	return nil
@@ -69,7 +69,7 @@ func (tokenValidator *TokenValidator) reifyTimestamp(component string) (*timesta
 	seconds, decodeError = tokenValidator.base36Codec.Decode(component)
 
 	if decodeError != nil {
-		return nil, fault.NewValidationError("Token prefix timestamp component is not a valid Base36 value")
+		return nil, fault.NewValidationError("token prefix timestamp component is not a valid Base36 value")
 	}
 
 	return timestamp.NewTimestamp(seconds, component), nil
@@ -81,14 +81,14 @@ func (tokenValidator *TokenValidator) reifyTimestamp(component string) (*timesta
 // four carry one as the trailing component, and any other count is rejected.
 func (tokenValidator *TokenValidator) reifyContext(prefixPortion string) (string, string, string, *timestamp.Timestamp, error) {
 	if !strings.HasSuffix(prefixPortion, Separator) {
-		return "", "", "", nil, fault.NewValidationError("Token prefix is not terminated by a separator")
+		return "", "", "", nil, fault.NewValidationError("token prefix is not terminated by a separator")
 	}
 
 	var core string = prefixPortion[:len(prefixPortion)-len(Separator)]
 	var components []string = strings.Split(core, Separator)
 
 	if len(components) != PrefixComponentCount && len(components) != PrefixComponentCount+1 {
-		return "", "", "", nil, fault.NewValidationError("Token prefix does not contain three semantic components with an optional timestamp")
+		return "", "", "", nil, fault.NewValidationError("token prefix does not contain three semantic components with an optional timestamp")
 	}
 
 	var systemError error = tokenValidator.validateComponent("system", components[0])
@@ -127,7 +127,7 @@ func (tokenValidator *TokenValidator) reifyContext(prefixPortion string) (string
 // verifies integrity idempotently, and reifies the semantic context into a token.
 func (tokenValidator *TokenValidator) Validate(rawToken string) (*Token, error) {
 	if len(rawToken) < MinimumLength {
-		return nil, fault.NewValidationError("Token is shorter than the minimum derived length")
+		return nil, fault.NewValidationError("token is shorter than the minimum derived length")
 	}
 
 	var baseString string = rawToken[:len(rawToken)-checksum.Length]

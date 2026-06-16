@@ -1,9 +1,9 @@
 package token
 
 import (
-	"go.leoweyr.com/tokenforge/go/internal/checksum"
-	"go.leoweyr.com/tokenforge/go/internal/entropy"
-	"go.leoweyr.com/tokenforge/go/internal/timestamp"
+	"go.leoweyr.com/keycutter/go/v2/internal/checksum"
+	"go.leoweyr.com/keycutter/go/v2/internal/entropy"
+	"go.leoweyr.com/keycutter/go/v2/internal/timestamp"
 )
 
 // Separator is the single-byte delimiter placed between prefix semantic components
@@ -25,7 +25,7 @@ const MinimumLength int = MinimumPrefixLength + entropy.Length + checksum.Length
 // assembleBaseString concatenates the three prefix identifiers, the optional Base36
 // timestamp component, the separators, and the entropy segment into the canonical
 // base string used for checksum mapping. A nil timestamp yields the bare three-component
-// prefix; a present timestamp appends a fourth component after the domain purpose.
+// prefix. A present timestamp appends a fourth component after the domain purpose.
 func assembleBaseString(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string, timestamp *timestamp.Timestamp, entropy *entropy.Entropy) string {
 	var prefix string = systemIdentifier + Separator + environmentIdentifier + Separator + domainPurposeIdentifier + Separator
 

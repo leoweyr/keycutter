@@ -2,23 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
-# [1.1.0](https://github.com/leoweyr/tokenforge/compare/go/v1.0.0...go/v1.1.0) (2026-06-15)
+# [2.0.0](https://github.com/leoweyr/keycutter/compare/go/v1.1.0...go/v2.0.0) (2026-06-16)
+### Refactor
+
+* **go:** align validation errors with ST1005 ([0ca166c](https://github.com/leoweyr/keycutter/commit/0ca166c85c5a822b623238cd814c706e9206fe5b)) [@leoweyr](https://github.com/leoweyr)
+* rename project from Tokenforge to Keycutter ([09a8c63](https://github.com/leoweyr/keycutter/commit/09a8c63d5d48337fc54d324cd53bf8c57bc12400)) [@leoweyr](https://github.com/leoweyr)
+
+
+
+# [1.1.0](https://github.com/leoweyr/keycutter/compare/go/v1.0.0...go/v1.1.0) (2026-06-15)
 ### Features
 
-* **go:** add optional self-describing Base36 timestamp prefix component ([fe178dd](https://github.com/leoweyr/tokenforge/commit/fe178dd48950f348e4d0eda97dc9d102e350028f)) [@leoweyr](https://github.com/leoweyr)
+* **go:** add optional self-describing Base36 timestamp prefix component ([fe178dd](https://github.com/leoweyr/keycutter/commit/fe178dd48950f348e4d0eda97dc9d102e350028f)) [@leoweyr](https://github.com/leoweyr)
 
 
 
 # 1.0.0
 ### Features
 
-* **go:** implement token generation and validation module ([42a2e00](https://github.com/leoweyr/tokenforge/commit/42a2e00d9419792fbc719d8e5b53cb0392b4009d)) [@leoweyr](https://github.com/leoweyr)
+* **go:** implement token generation and validation module ([42a2e00](https://github.com/leoweyr/keycutter/commit/42a2e00d9419792fbc719d8e5b53cb0392b4009d)) [@leoweyr](https://github.com/leoweyr)
 
 
 ### Refactor
 
-* **go:** align module path with `go/` subdirectory location in repository ([f507e51](https://github.com/leoweyr/tokenforge/commit/f507e51324b143d75d962eeeb02cb7c29e580331)) [@leoweyr](https://github.com/leoweyr)
-* batch CSPRNG reads and name components in validation errors ([bd322ad](https://github.com/leoweyr/tokenforge/commit/bd322adce4beb2ace1d1ef5fa9ad9121f43286ac)) [@leoweyr](https://github.com/leoweyr)
+* **go:** align module path with `go/` subdirectory location in repository ([f507e51](https://github.com/leoweyr/keycutter/commit/f507e51324b143d75d962eeeb02cb7c29e580331)) [@leoweyr](https://github.com/leoweyr)
+* batch CSPRNG reads and name components in validation errors ([bd322ad](https://github.com/leoweyr/keycutter/commit/bd322adce4beb2ace1d1ef5fa9ad9121f43286ac)) [@leoweyr](https://github.com/leoweyr)
 
 
 

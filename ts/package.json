@@ -1,8 +1,8 @@
 {
-  "name": "tokenforge",
-  "version": "1.0.0",
+  "name": "keycutter",
+  "version": "2.0.0",
   "description": "One spec, every language — context-aware credential architecture for generating and verifying structured tokens with byte-identical layout and CRC32 tail checksums.",
-  "bugs": "https://github.com/leoweyr/tokenforge/issues",
+  "bugs": "https://github.com/leoweyr/keycutter/issues",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,10 +28,14 @@
     "checksum",
     "polyglot",
     "token",
-    "crc32",
     "token-generation",
+    "token-validation",
+    "key",
+    "key-generation",
+    "key-validation",
     "credential",
-    "token-validation"
+    "credential-generator",
+    "crc32"
   ],
   "author": "leoweyr <contact@leoweyr.com>",
   "license": "MIT",
@@ -40,7 +44,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/leoweyr/tokenforge.git",
+    "url": "git+https://github.com/leoweyr/keycutter.git",
     "directory": "ts"
   }
 }

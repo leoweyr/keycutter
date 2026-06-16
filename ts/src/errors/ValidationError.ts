@@ -1,6 +1,6 @@
 /**
  * ValidationError represents a structural or integrity failure detected while a token is checked
- * against the Tokenforge specification.
+ * against the Keycutter specification.
  */
 export class ValidationError extends Error {
     /**

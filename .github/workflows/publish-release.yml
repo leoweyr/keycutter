@@ -12,7 +12,8 @@ jobs:
     uses: leoweyr/github-release-workflow/.github/workflows/reusable-publish-release.yml@develop
     with:
       trb-repository: 'ODCLAB/odyssey-plan'
-      trb-project-node-name: 'Tokenforge'
+      trb-project-node-name: 'Keycutter'
       npm-package-dir: 'ts'
     secrets:
       ACCESS_TOKEN: ${{ secrets.PUBLISH_GITHUB_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

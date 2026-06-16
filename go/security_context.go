@@ -1,9 +1,9 @@
-package tokenforge
+package keycutter
 
 import (
 	"strings"
 
-	"go.leoweyr.com/tokenforge/go/internal/timestamp"
+	"go.leoweyr.com/keycutter/go/v2/internal/timestamp"
 )
 
 // SecurityContext exposes the plaintext semantic identifiers reified from a validated
