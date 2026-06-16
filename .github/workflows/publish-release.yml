@@ -13,5 +13,6 @@ jobs:
     with:
       trb-repository: 'ODCLAB/odyssey-plan'
       trb-project-node-name: 'Tokenforge'
+      npm-package-dir: 'ts'
     secrets:
       ACCESS_TOKEN: ${{ secrets.PUBLISH_GITHUB_TOKEN }}

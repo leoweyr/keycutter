@@ -20,7 +20,8 @@ jobs:
     with:
       packages: |
         {
-          "go": "go"
+          "go": "go",
+          "ts": "ts"
         }
 
     secrets:

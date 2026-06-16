@@ -1,0 +1,46 @@
+{
+  "name": "tokenforge",
+  "version": "1.0.0",
+  "description": "One spec, every language — context-aware credential architecture for generating and verifying structured tokens with byte-identical layout and CRC32 tail checksums.",
+  "bugs": "https://github.com/leoweyr/tokenforge/issues",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "compile": "tsc",
+    "build": "npm run clean && npm run compile",
+    "deploy": "npm run build && cp ../LICENSE ../README.md ./ && npm publish"
+  },
+  "keywords": [
+    "security",
+    "identity",
+    "checksum",
+    "polyglot",
+    "token",
+    "crc32",
+    "token-generation",
+    "credential",
+    "token-validation"
+  ],
+  "author": "leoweyr <contact@leoweyr.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leoweyr/tokenforge.git",
+    "directory": "ts"
+  }
+}

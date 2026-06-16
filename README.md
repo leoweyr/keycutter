@@ -76,7 +76,7 @@ $$
 \begin{array}{l}
 \text{for } i = 5 \rightarrow 0: \\
 \quad \text{Remainder} = \text{Value} \bmod 62 \\
-\quad \text{Checksum}[i] = \text{BASE62\_CHARSET}[\text{Remainder}] \\
+\quad \text{Checksum}[i] = \text{Base62Charset}[\text{Remainder}] \\
 \quad \text{Value} = \left\lfloor \dfrac{\text{Value}}{62} \right\rfloor
 \end{array}
 $$
