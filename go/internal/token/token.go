@@ -1,9 +1,9 @@
 package token
 
 import (
-	"go.leoweyr.com/tokenforge/go/internal/checksum"
-	"go.leoweyr.com/tokenforge/go/internal/entropy"
-	"go.leoweyr.com/tokenforge/go/internal/timestamp"
+	"go.leoweyr.com/keycutter/go/v2/internal/checksum"
+	"go.leoweyr.com/keycutter/go/v2/internal/entropy"
+	"go.leoweyr.com/keycutter/go/v2/internal/timestamp"
 )
 
 // Separator is the single-byte delimiter placed between prefix semantic components

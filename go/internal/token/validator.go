@@ -3,11 +3,11 @@ package token
 import (
 	"strings"
 
-	"go.leoweyr.com/tokenforge/go/internal/checksum"
-	"go.leoweyr.com/tokenforge/go/internal/encoding"
-	"go.leoweyr.com/tokenforge/go/internal/entropy"
-	"go.leoweyr.com/tokenforge/go/internal/fault"
-	"go.leoweyr.com/tokenforge/go/internal/timestamp"
+	"go.leoweyr.com/keycutter/go/v2/internal/checksum"
+	"go.leoweyr.com/keycutter/go/v2/internal/encoding"
+	"go.leoweyr.com/keycutter/go/v2/internal/entropy"
+	"go.leoweyr.com/keycutter/go/v2/internal/fault"
+	"go.leoweyr.com/keycutter/go/v2/internal/timestamp"
 )
 
 // TokenValidator orchestrates the validation pipeline: a structural guard, an

@@ -1,24 +1,24 @@
-package tokenforge
+package keycutter
 
 import (
-	"go.leoweyr.com/tokenforge/go/internal/checksum"
-	"go.leoweyr.com/tokenforge/go/internal/encoding"
-	"go.leoweyr.com/tokenforge/go/internal/entropy"
-	"go.leoweyr.com/tokenforge/go/internal/timestamp"
-	"go.leoweyr.com/tokenforge/go/internal/token"
+	"go.leoweyr.com/keycutter/go/v2/internal/checksum"
+	"go.leoweyr.com/keycutter/go/v2/internal/encoding"
+	"go.leoweyr.com/keycutter/go/v2/internal/entropy"
+	"go.leoweyr.com/keycutter/go/v2/internal/timestamp"
+	"go.leoweyr.com/keycutter/go/v2/internal/token"
 )
 
-// Forge is the public entry point of the Tokenforge module. It composes the
+// Cutter is the public entry point of the module. It composes the
 // generation and validation pipelines and exposes them behind a small surface.
-type Forge struct {
+type Cutter struct {
 	generator *token.TokenGenerator
 	validator *token.TokenValidator
 }
 
-// NewForge builds a Forge by wiring the Base62 alphabet, the prefix alphabet, the
+// NewCutter builds a Cutter by wiring the Base62 alphabet, the prefix alphabet, the
 // Base62 encoder, the CRC32 checksum calculator, and the secure entropy generator
 // into a generation pipeline and a validation pipeline.
-func NewForge() *Forge {
+func NewCutter() *Cutter {
 	var base62Alphabet *encoding.Alphabet = encoding.NewAlphabet(encoding.Base62Characters)
 	var prefixAlphabet *encoding.Alphabet = encoding.NewAlphabet(encoding.Base36Characters)
 
@@ -34,7 +34,7 @@ func NewForge() *Forge {
 	var generator *token.TokenGenerator = token.NewTokenGenerator(prefixAlphabet, entropyGenerator, checksumCalculator, clock, base36Codec)
 	var validator *token.TokenValidator = token.NewTokenValidator(prefixAlphabet, checksumCalculator, base36Codec)
 
-	return &Forge{
+	return &Cutter{
 		generator: generator,
 		validator: validator,
 	}
@@ -42,10 +42,10 @@ func NewForge() *Forge {
 
 // Generate runs the full generation pipeline for the given semantic identifiers and
 // returns the rendered token string.
-func (forge *Forge) Generate(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string) (string, error) {
+func (cutter *Cutter) Generate(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string) (string, error) {
 	var generated *token.Token
 	var generationError error
-	generated, generationError = forge.generator.Generate(systemIdentifier, environmentIdentifier, domainPurposeIdentifier)
+	generated, generationError = cutter.generator.Generate(systemIdentifier, environmentIdentifier, domainPurposeIdentifier)
 
 	if generationError != nil {
 		return "", generationError
@@ -57,10 +57,10 @@ func (forge *Forge) Generate(systemIdentifier string, environmentIdentifier stri
 // GenerateWithTimestamp runs the generation pipeline for the given semantic identifiers
 // while appending the current instant as an optional Base36 Unix-seconds timestamp, and
 // returns the rendered token string.
-func (forge *Forge) GenerateWithTimestamp(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string) (string, error) {
+func (cutter *Cutter) GenerateWithTimestamp(systemIdentifier string, environmentIdentifier string, domainPurposeIdentifier string) (string, error) {
 	var generated *token.Token
 	var generationError error
-	generated, generationError = forge.generator.GenerateWithTimestamp(systemIdentifier, environmentIdentifier, domainPurposeIdentifier)
+	generated, generationError = cutter.generator.GenerateWithTimestamp(systemIdentifier, environmentIdentifier, domainPurposeIdentifier)
 
 	if generationError != nil {
 		return "", generationError
@@ -73,10 +73,10 @@ func (forge *Forge) GenerateWithTimestamp(systemIdentifier string, environmentId
 // reified security context when the token is structurally and cryptographically sound.
 // The validator detects an embedded timestamp from the prefix component count alone,
 // without any prior knowledge of whether the token carries one.
-func (forge *Forge) Validate(rawToken string) (*SecurityContext, error) {
+func (cutter *Cutter) Validate(rawToken string) (*SecurityContext, error) {
 	var validated *token.Token
 	var validationError error
-	validated, validationError = forge.validator.Validate(rawToken)
+	validated, validationError = cutter.validator.Validate(rawToken)
 
 	if validationError != nil {
 		return nil, validationError

@@ -1,4 +1,7 @@
-# Tokenforge
+# Keycutter
+
+[![Go](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fproxy.golang.org%2Fgo.leoweyr.com%2Fkeycutter%2Fgo%2Fv2%2F%40latest&query=%24.Version&label=go&logo=go&logoColor=white&color=00ADD8)](https://pkg.go.dev/go.leoweyr.com/keycutter/go/v2)
+[![npm](https://img.shields.io/npm/v/keycutter?logo=npm&logoColor=white&color=CB3837)](https://www.npmjs.com/package/keycutter)
 
 One spec, every language — context-aware credential architecture for generating and verifying structured tokens with byte-identical layout and CRC32 tail checksums.
 
@@ -27,7 +30,13 @@ One spec, every language — context-aware credential architecture for generatin
 ### Go
 
 ```bash
-go get go.leoweyr.com/tokenforge/go
+go get go.leoweyr.com/keycutter/go/v2
+```
+
+### Nodejs
+
+```bash
+npm install keycutter --save
 ```
 
 ## 🏗️ Generation Pipeline
@@ -138,4 +147,4 @@ The practical security floor for API tokens in cloud-native architecture is 128 
 
 Some vendors push further: GitHub's personal access tokens use 30 entropy characters, reaching ~178 bits. From a pure cryptographic standpoint, that number is unimpeachable. From an engineering leverage standpoint, it is unnecessary — beyond ~140 bits, the marginal security return per additional character converges to zero. The cost, however, is real. Every extra character widens network payloads, inflates database index pages, and — on mobile — turns a token into a string too long to select cleanly with a long-press. 
 
-Tokenforge locks high-intensity entropy at 24 characters: the precise point where cryptographic surplus meets transmission efficiency and human ergonomics, with nothing wasted on either side.
+Keycutter locks high-intensity entropy at 24 characters: the precise point where cryptographic surplus meets transmission efficiency and human ergonomics, with nothing wasted on either side.

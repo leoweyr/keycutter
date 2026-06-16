@@ -12,10 +12,10 @@ import { SecurityContext } from "./SecurityContext";
 
 
 /**
- * The public entry point of the Tokenforge module. It composes the generation and validation
+ * The public entry point of the module. It composes the generation and validation
  * pipelines and exposes them behind a small surface.
  */
-export class Forge {
+export class Cutter {
     private readonly _generator: TokenGenerator;
     private readonly _validator: TokenValidator;
 
