@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+# [2.0.0](https://github.com/leoweyr/keycutter/compare/go/v1.1.0...go/v2.0.0) (2026-06-16)
+### Refactor
+
+* **go:** align validation errors with ST1005 ([0ca166c](https://github.com/leoweyr/keycutter/commit/0ca166c85c5a822b623238cd814c706e9206fe5b)) [@leoweyr](https://github.com/leoweyr)
+* rename project from Tokenforge to Keycutter ([09a8c63](https://github.com/leoweyr/keycutter/commit/09a8c63d5d48337fc54d324cd53bf8c57bc12400)) [@leoweyr](https://github.com/leoweyr)
+
+
+
 # [1.1.0](https://github.com/leoweyr/keycutter/compare/go/v1.0.0...go/v1.1.0) (2026-06-15)
 ### Features
 
