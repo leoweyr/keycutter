@@ -2,10 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+# [2.0.0](https://github.com/leoweyr/keycutter/compare/ts/v1.0.0...ts/v2.0.0) (2026-06-16)
+### Refactor
+
+* rename project from Tokenforge to Keycutter ([09a8c63](https://github.com/leoweyr/keycutter/commit/09a8c63d5d48337fc54d324cd53bf8c57bc12400)) [@leoweyr](https://github.com/leoweyr)
+
+
+
 # 1.0.0 (2026-06-16)
 ### Features
 
-* **ts:** port Go implementation to TypeScript with byte-identical behavior ([9eb734c](https://github.com/leoweyr/tokenforge/commit/9eb734cfee49a449eb98bc7805326cae6ba706aa)) [@leoweyr](https://github.com/leoweyr)
+* **ts:** port Go implementation to TypeScript with byte-identical behavior ([9eb734c](https://github.com/leoweyr/keycutter/commit/9eb734cfee49a449eb98bc7805326cae6ba706aa)) [@leoweyr](https://github.com/leoweyr)
 
 
 
