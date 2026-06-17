@@ -1,5 +1,6 @@
 # Keycutter
 
+[![CLI](https://img.shields.io/npm/v/keycutter-cli?label=cli&logo=npm&logoColor=white&color=CB3837)](https://www.npmjs.com/package/keycutter-cli)
 [![Go](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fproxy.golang.org%2Fgo.leoweyr.com%2Fkeycutter%2Fgo%2Fv2%2F%40latest&query=%24.Version&label=go&logo=go&logoColor=white&color=00ADD8)](https://pkg.go.dev/go.leoweyr.com/keycutter/go/v2)
 [![npm](https://img.shields.io/npm/v/keycutter?logo=npm&logoColor=white&color=CB3837)](https://www.npmjs.com/package/keycutter)
 
