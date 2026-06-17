@@ -27,6 +27,38 @@ One spec, every language — context-aware credential architecture for generatin
 
 ## 🚀 Quick Start
 
+### CLI
+
+```bash
+npm install keycutter-cli --global
+```
+
+#### Generate a structured token from the given semantic identifiers
+
+```bash
+keycutter generate <system> <environment> <domain-purpose> [options]
+```
+
+| Argument           | Description                                                                  | Type   |
+|--------------------|------------------------------------------------------------------------------|--------|
+| `<system>`         | System identifier, restricted to lowercase ASCII letters and digits.         | String |
+| `<environment>`    | Environment identifier, restricted to lowercase ASCII letters and digits.    | String |
+| `<domain-purpose>` | Domain purpose identifier, restricted to lowercase ASCII letters and digits. | String |
+
+| Option            | Description                                                     | Type    | Default |
+|-------------------|-----------------------------------------------------------------|---------|---------|
+| `-t, --timestamp` | Embed a self-describing Base36 Unix-seconds creation timestamp. | Boolean | false   |
+
+#### Verify a token and reveal its self-describing timestamp
+
+```bash
+keycutter verify <token>
+```
+
+| Argument  | Description            | Type   |
+|-----------|------------------------|--------|
+| `<token>` | Raw token to validate. | String |
+
 ### Go
 
 ```bash
