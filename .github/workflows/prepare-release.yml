@@ -21,7 +21,8 @@ jobs:
       packages: |
         {
           "go": "go",
-          "ts": "ts"
+          "ts": "ts",
+          "cli": "cli"
         }
 
     secrets:

@@ -12,7 +12,7 @@ jobs:
     uses: leoweyr/github-release-workflow/.github/workflows/reusable-publish-release.yml@develop
     with:
       trb-repository: 'ODCLAB/odyssey-plan'
-      trb-project-node-name: 'Keycutter',
+      trb-project-node-name: 'Keycutter'
       package-overrides: |
         {
           "ts": {
